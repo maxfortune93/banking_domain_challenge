@@ -1,0 +1,42 @@
+version: '3.9'
+
+services:
+
+  database:
+    image: postgres:15.3-alpine
+    container_name: postgres-bank-domain
+    ports:
+      - '54321:5432'
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: db_bank_domain
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  nestjs:
+    build:
+      context: .
+      dockerfile: dockerfile
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - '3000:3000'
+      - '9300:9300'
+    depends_on:
+      - database
+    env_file:
+      - .env
+    environment:
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_USER: postgres
+      DATABASE_PASSWORD: postgres
+      DATABASE_NAME: db_bank_domain
+    command: sh -c "${COMMAND:-npm run start:dev}"
+    
+volumes:
+  postgres_data:
+
+
