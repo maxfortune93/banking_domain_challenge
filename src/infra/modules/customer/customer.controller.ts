@@ -3,6 +3,7 @@ import { CreateCustomerRequestDto } from "./dto/request/create-customer-dto";
 import { CustomerApplicationService } from "@application/services/customer-application.service";
 import { JwtAuthGuard } from "@infra/modules/auth/guards/jwt-auth.guard";
 import { ResponseHandler } from "src/shared/response-handler/response-handler";
+import { ApiCreateCustomer, ApiGetCustomerById } from "./swagger/customer";
 
 
 @Controller('customers')
@@ -10,6 +11,7 @@ export class CustomerController {
   constructor(private readonly customerService: CustomerApplicationService) {}
 
   @Post()
+  @ApiCreateCustomer()
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() dto: CreateCustomerRequestDto) {
     const result = await this.customerService.createCustomer(dto);
@@ -19,6 +21,7 @@ export class CustomerController {
 
   @UseGuards(JwtAuthGuard)
   @Get(':customerUuid')
+  @ApiGetCustomerById()
   async getCustomerById(@Param('customerUuid') customerUuid: string) {
     const customer = await this.customerService.getCustomerWithAccounts(customerUuid);
     return ResponseHandler.success(customer, 'Customer fetched successfully.');
