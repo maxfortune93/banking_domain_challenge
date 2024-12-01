@@ -1,73 +1,105 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Banco Digital Backend - Documentação
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Descrição do Projeto
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Este projeto é uma API backend desenvolvida com NestJS que simula o funcionamento de um sistema bancário. Ele implementa os princípios de Domain-Driven Design (DDD) para gerenciar clientes, contas bancárias e movimentações financeiras. O objetivo é garantir uma arquitetura bem organizada, com separação clara de responsabilidades, enquanto respeita as regras de negócio do domínio bancário.
 
-## Description
+## Requisitos Implementados
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+1. Clientes
+ * Atributos:
+   - Nome completo
+   - CPF (único)
+   - Data de nascimento
+ * Regras de Negócio:
+   - Validação do CPF.
+   - Um cliente pode possuir uma ou mais contas bancárias.
+ * Endpoints:
+   - POST /customers - Criar um novo cliente.
+   - GET /customers/:customerUuid - Obter informações de um cliente, incluindo suas contas.
+
+2. Login
+
+  * Endpoints:
+    - POST /auth/login - Realizar o login.
+
+3. Contas Bancárias
+  * Atributos:
+    - Número da conta (gerado automaticamente).
+    - Saldo inicial (opcional, padrão: zero).
+    - Status da conta (ativa/inativa).
+  * Regras de Negócio:
+    - Apenas contas ativas podem realizar movimentações.
+    - Cada conta está vinculada a um único cliente.
+  * Endpoints:
+    - POST /accounts - Criar uma nova conta para um cliente.
+    - PATCH /contas/:accountUuid/status - Atualizar o status de uma conta.
+    - GET /contas/:accountUuid - Obter informações de uma conta, incluindo movimentações.
+
+4. Movimentações Financeiras
+  * Tipos de Movimentações:
+    - Depósito
+    - Saque
+    - Transferência entre contas
+  * Regras de Negócio:
+    - O saldo da conta não pode ser negativo.
+    - Transferências só podem ocorrer entre contas ativas.
+    - Cada movimentação registra:
+      - Data/hora
+      - Tipo de movimentação
+      - Valor
+      - Contas envolvidas
+  * Endpoints:
+    - POST /transactions/deposit - Realizar um depósito.
+    - POST /transactions/withdraw - Realizar um saque.
+    - POST /transactions/transfer - Realizar uma transferência.
+
+## Tecnologias Utilizadas
+ * Node.js com NestJS (framework principal)
+ * TypeScript
+ * PostgreSQL (banco de dados relacional)
+ * Sequelize (ORM)
+ * class-validator (validação de entradas)
+ * Swagger (documentação da API)
+ * JWT (autenticação)
+ * Docker (containerização)
+
+## Configuração do Ambiente
+### Pré-requisitos
+ * Node.js v16 ou superior
+ * Docker e Docker Compose
+ * Git (para clonar o repositório)
 
 ## Installation
+
+1. Clone o repositório
+```bash
+$ git clone https://github.com/maxfortune93/banking_domain_challenge.git
+```
+2. Instale as dependências:
 
 ```bash
 $ npm install
 ```
 
-## Running the app
+3. Configure as variáveis de ambiente:
 
+* Crie um arquivo .env baseado no .env.example.
+* Configure os valores, incluindo as credenciais do banco de dados e o segredo do JWT.
+
+4. Suba o banco de dados e a applicação usando Docker:
 ```bash
-# development
-$ npm run start
+$ docker compose up -d  || docker compose up --build || npm run docker:debug
 
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
 ```
 
-## Test
+5. Execute as migrações do banco de dados:
+  ```bash
+  $ npm run db:migrate
 
-```bash
-# unit tests
-$ npm run test
+  ```
 
-# e2e tests
-$ npm run test:e2e
+6. Acesse a documentação da API:
 
-# test coverage
-$ npm run test:cov
-```
+* Acesse o Swagger em: [http://localhost:3000/docs](http://localhost:3000/docs)
 
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).

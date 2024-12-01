@@ -1,6 +1,4 @@
 import { Module, OnModuleInit } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { sequelizeConfig } from './infra/database/sequelize.config';
 import { CustomerModule } from './infra/modules/customer/customer.module';
 import { SequelizeModule } from '@nestjs/sequelize';
@@ -21,9 +19,8 @@ import { FinancialTransactionModule } from '@infra/modules/financial-transaction
     AuthModule,
     FinancialTransactionModule
   ],
-  controllers: [AppController],
+  controllers: [],
   providers: [
-    AppService,
     {
       provide: APP_FILTER,
       useClass: HttpExceptionFilter,
