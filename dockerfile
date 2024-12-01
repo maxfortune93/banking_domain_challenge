@@ -2,7 +2,7 @@ FROM node:20.11.1-slim
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-       wget gnupg \
+       procps wget gnupg \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -15,3 +15,5 @@ RUN npm install
 COPY . .
 
 EXPOSE 3000 9300
+
+CMD ["npm", "run", "start:dev"]

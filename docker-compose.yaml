@@ -7,6 +7,8 @@ services:
     container_name: postgres-bank-domain
     ports:
       - '54321:5432'
+    networks:
+      - app_network
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -28,6 +30,8 @@ services:
       - database
     env_file:
       - .env
+    networks:
+      - app_network
     environment:
       DATABASE_HOST: postgres
       DATABASE_PORT: 5432
@@ -35,7 +39,10 @@ services:
       DATABASE_PASSWORD: postgres
       DATABASE_NAME: db_bank_domain
     command: sh -c "${COMMAND:-npm run start:dev}"
-    
+
+networks:
+  app_network:
+
 volumes:
   postgres_data:
 

@@ -1,0 +1,59 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Launch via NPM",
+        "type": "node",
+        "request": "launch",
+        "cwd": "${workspaceRoot}",
+        "runtimeExecutable": "npm",
+        "runtimeArgs": ["run", "start:debug"],
+        "console": "integratedTerminal"
+      },
+      {
+        "type": "node",
+        "request": "launch",
+        "name": "Debug and load Env Vars",
+        "envFile": "${workspaceFolder}/.env",
+        "args": ["${workspaceFolder}/src/main.ts"],
+        "runtimeArgs": [
+          "--nolazy",
+          "-r",
+          "ts-node/register",
+          "-r",
+          "tsconfig-paths/register"
+        ],
+        "sourceMaps": true,
+        "cwd": "${workspaceRoot}",
+        "console": "integratedTerminal"
+      },
+      {
+        "runtimeExecutable": "node",
+        "runtimeArgs": ["--nolazy", "-r", "ts-node/register/transpile-only"],
+        "args": ["${workspaceFolder}/src/find-zeroed-ucs.ts"],
+        "internalConsoleOptions": "openOnSessionStart",
+        "skipFiles": ["<node_internals>/**", "node_modules/**"],
+        "type": "node",
+        "request": "launch",
+        "name": "Run script",
+        "envFile": "${workspaceFolder}/.env",
+        "sourceMaps": true,
+        "cwd": "${workspaceRoot}",
+        "console": "integratedTerminal"
+      },
+      {
+        "type": "node",
+        "request": "attach",
+        "name": "Docker: Attach to Node",
+        "address": "localhost",
+        "port": 9300,
+        "localRoot": "${workspaceFolder}",
+        "remoteRoot": "/usr/src/app",
+        "restart": true,
+        "sourceMaps": true,
+        "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+        "skipFiles": ["<node_internals>/**"]
+      }
+    ]
+  }
+  
